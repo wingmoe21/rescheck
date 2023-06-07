@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "215050631894",
+    "project_id": "res-check-e4df4",
+    "storage_bucket": "res-check-e4df4.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215050631894:android:3dd3e3dd440450f45f2777",
+        "android_client_info": {
+          "package_name": "com.domainname.rescheck"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215050631894-n6b7oc11jfvh9m57bv3bmtu6a7sfnbkj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDp21pz3Vstms8ft2MATzn8YGMkhJUOPGs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215050631894-n6b7oc11jfvh9m57bv3bmtu6a7sfnbkj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
