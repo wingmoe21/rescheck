@@ -10,7 +10,7 @@ class Home extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            Navigator.pushNamed(context, '/signup');
+            Navigator.pushNamed(context, '/signin');
           },
           child: Text('Go to Signup Page'),
         ),

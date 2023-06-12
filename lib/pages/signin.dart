@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Signin extends StatefulWidget {
   @override
@@ -42,7 +43,7 @@ class _SigninState extends State<Signin> {
     return isValid;
   }
 
-  Future<void> _signIn() async {
+  Future<void> _signInWithEmailAndPassword() async {
     if (_validateForm()) {
       try {
         UserCredential userCredential = await _auth.signInWithEmailAndPassword(
@@ -55,6 +56,33 @@ class _SigninState extends State<Signin> {
           _errorMessage = e.message!;
         });
       }
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        final UserCredential userCredential =
+            await FirebaseAuth.instance.signInWithCredential(credential);
+
+        if (userCredential.user != null) {
+          Navigator.pushNamed(context, '/home');
+        }
+      }
+    } catch (error) {
+      setState(() {
+        _errorMessage = error.toString();
+      });
     }
   }
 
@@ -89,7 +117,7 @@ class _SigninState extends State<Signin> {
             ElevatedButton(
               onPressed: () {
                 _clearErrors();
-                _signIn();
+                _signInWithEmailAndPassword();
               },
               child: Text('Sign In'),
             ),
@@ -97,6 +125,11 @@ class _SigninState extends State<Signin> {
             Text(
               _errorMessage ?? '',
               style: TextStyle(color: Colors.red),
+            ),
+            SizedBox(height: 16.0),
+            ElevatedButton(
+              onPressed: _signInWithGoogle,
+              child: Text('Sign In with Google'),
             ),
           ],
         ),

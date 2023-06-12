@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class Signup extends StatefulWidget {
   @override
@@ -13,6 +14,7 @@ class _SignupState extends State<Signup> {
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
   void dispose() {
@@ -117,6 +119,71 @@ class _SignupState extends State<Signup> {
     return null;
   }
 
+  Future<void> _handleGoogleSignIn() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser != null) {
+        final GoogleSignInAuthentication googleAuth =
+            await googleUser.authentication;
+
+        final OAuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth.accessToken,
+          idToken: googleAuth.idToken,
+        );
+
+        UserCredential userCredential =
+            await _auth.signInWithCredential(credential);
+
+        print('Signed in with Google: ${userCredential.user?.uid}');
+
+        // Clear form fields
+        _usernameController.clear();
+        _passwordController.clear();
+
+        // Show success dialog
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Success'),
+              content: Text('Sign in with Google successful!'),
+              actions: [
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    Navigator.pushNamed(context, '/signin');
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    } catch (error) {
+      print('Error signing in with Google: $error');
+      // Show error dialog
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Error'),
+            content: Text(
+                'An error occurred during Google sign-in. Please try again later.'),
+            actions: [
+              TextButton(
+                child: Text('OK'),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -145,6 +212,12 @@ class _SignupState extends State<Signup> {
               ElevatedButton(
                 onPressed: signUp,
                 child: Text('Sign Up'),
+              ),
+              SizedBox(height: 16.0),
+              ElevatedButton.icon(
+                onPressed: _handleGoogleSignIn,
+                icon: Icon(Icons.login),
+                label: Text('Sign In with Google'),
               ),
             ],
           ),
