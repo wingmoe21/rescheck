@@ -1,7 +1,7 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:rescheck/pages/forgot_password.dart';
 
 class Signin extends StatefulWidget {
   @override
@@ -24,6 +24,7 @@ class _SigninState extends State<Signin> {
       _errorMessage = "";
     });
   }
+
   @override
   void dispose() {
     _emailController.dispose();
@@ -52,21 +53,22 @@ class _SigninState extends State<Signin> {
   }
 
   Future<void> _signInWithEmailAndPassword() async {
-  if (_validateForm()) {
-    try {
-      await _auth.setPersistence(Persistence.LOCAL); // Set authentication persistence
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
-      Navigator.pushNamed(context, '/home');
-    } on FirebaseAuthException catch (e) {
-      setState(() {
-        _errorMessage = e.message!;
-      });
+    if (_validateForm()) {
+      try {
+        await _auth.setPersistence(Persistence.LOCAL); // Set authentication persistence
+        UserCredential userCredential =
+            await _auth.signInWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+        Navigator.pushNamed(context, '/home');
+      } on FirebaseAuthException catch (e) {
+        setState(() {
+          _errorMessage = e.message!;
+        });
+      }
     }
   }
-}
 
   Future<void> _signInWithGoogle() async {
     try {
@@ -95,7 +97,7 @@ class _SigninState extends State<Signin> {
     }
   }
 
-@override
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -123,15 +125,15 @@ class _SigninState extends State<Signin> {
               obscureText: true,
             ),
             SizedBox(height: 16.0),
-            InkWell(
-              onTap: () {
-                setState(() {
-                  _rememberMe = !_rememberMe;
-                });
-              },
-              child: Row(
-                children: [
-                  Container(
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _rememberMe = !_rememberMe;
+                    });
+                  },
+                  child: Container(
                     width: 24.0,
                     height: 24.0,
                     decoration: BoxDecoration(
@@ -147,10 +149,26 @@ class _SigninState extends State<Signin> {
                           )
                         : null,
                   ),
-                  SizedBox(width: 8.0),
-                  Text('Remember Me'),
-                ],
-              ),
+                ),
+                SizedBox(width: 8.0),
+                Text('Remember Me'),
+                Spacer(),
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ForgotPassword()), // Navigate to ForgotPasswordPage
+                    );
+                  },
+                  child: Text(
+                    'Forgot Password',
+                    style: TextStyle(
+                      fontSize: 12.0,
+                      color: Colors.blue,
+                    ),
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 16.0),
             ElevatedButton(
@@ -176,3 +194,4 @@ class _SigninState extends State<Signin> {
     );
   }
 }
+
