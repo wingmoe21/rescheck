@@ -108,16 +108,21 @@ class _SignupState extends State<Signup> {
   }
 
   String? validatePassword(String? value) {
-    if (value!.isEmpty) {
-      return 'Please enter a password';
-    } else if (value.length < 6 || value.length > 12) {
-      return 'Password must be between 6 and 12 characters';
-    } else if (!RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$')
-        .hasMatch(value)) {
-      return 'Password must contain at least 1 digit, 1 lowercase, 1 uppercase, and 1 special character';
-    }
-    return null;
+  if (value!.isEmpty) {
+    return 'Please enter a password';
+  } else if (value.length < 6 || value.length > 12) {
+    return 'Password must be between 6 and 12 characters';
+  } else if (!RegExp(r'^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=]).*$')
+      .hasMatch(value)) {
+    return 'Password must contain at least:\n'
+        '- 1 digit\n'
+        '- 1 lowercase letter\n'
+        '- 1 uppercase letter\n'
+        '- 1 special character';
   }
+  return null;
+}
+
 
   Future<void> _handleGoogleSignIn() async {
     try {
